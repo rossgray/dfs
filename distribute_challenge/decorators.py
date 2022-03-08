@@ -26,7 +26,6 @@ def compute_this():
             if ready is True:
                 return func(*args, **kwargs)
             else:
-                logger.info('Inside wrapper_compute_this')
                 distributed = DistributedFunctionService(func, *args, **kwargs)
                 return distributed
 
