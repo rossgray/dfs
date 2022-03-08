@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redis:6.2
+
+  worker:
+    build: .
+    command: python -m distribute_challenge.worker
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_URL=redis://redis:6379/1
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  client:
+    build: .
+    command: python -m client.client
+    environment:
+      - REDIS_HOST=redis
+    profiles:
+      - client
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
