@@ -3,7 +3,10 @@
 workers?=1
 
 service:
-	docker compose up --build --scale worker=${workers}
+	docker compose up -d --build --scale worker=${workers}
+
+service-down:
+	docker compose down
 
 client:
 	docker compose run client

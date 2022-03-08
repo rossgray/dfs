@@ -15,6 +15,7 @@ services:
       - .:/app
     depends_on:
       - redis
+    restart: always
 
   client:
     build: .
@@ -27,3 +28,15 @@ services:
       - .:/app
     depends_on:
       - redis
+
+  dashboard:
+    build: .
+    command: rq-dashboard
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+    ports:
+     - "9181:9181"

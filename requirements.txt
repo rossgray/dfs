@@ -3,6 +3,9 @@ flake8==4.0.1
 redis==4.1.4
 rq==1.10.1
 
+# using forked version of rq-dashboard since official one is broken
+git+https://github.com/jace/rq-dashboard.git@master
+
 # Testing
 pytest==7.0.1
 fakeredis==1.7.1
