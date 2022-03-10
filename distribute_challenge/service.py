@@ -2,6 +2,10 @@ import time
 import os
 from redis import Redis
 from rq import Queue
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 ENV = os.getenv("ENV")
 REDIS_HOST = os.getenv("REDIS_HOST")
@@ -26,6 +30,7 @@ class DistributedFunctionService:
     def run(self):
         kwargs = self.kwargs
         kwargs['__ready'] = True
+        # logger.info('inside DistributedFunctionService.run')
         job = queue.enqueue(self.func, args=self.args, kwargs=kwargs)
         # TODO - add error handling
         while job.result is None:

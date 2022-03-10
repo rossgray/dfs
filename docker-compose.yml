@@ -17,18 +17,6 @@ services:
       - redis
     restart: always
 
-  client:
-    build: .
-    command: python -m client.client
-    environment:
-      - REDIS_HOST=redis
-    profiles:
-      - client
-    volumes:
-      - .:/app
-    depends_on:
-      - redis
-
   dashboard:
     build: .
     command: rq-dashboard
@@ -40,3 +28,15 @@ services:
       - redis
     ports:
      - "9181:9181"
+
+  client:
+    build: .
+    command: python -m client.client
+    environment:
+      - REDIS_HOST=redis
+    profiles:
+      - client
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
