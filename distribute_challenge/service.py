@@ -23,8 +23,8 @@ class DistributedFunctionService:
     def run(self):
         """Places the function in an rq queue where it will be consumed by one
         of the workers. Since this function needs to return a result
-        synchronously to the client, we wait until the job has been executed and
-        then return the result.
+        synchronously to the client, we wait until the job has been executed
+        and then return the result.
 
         We add a special '__ready' kwarg to the function to enqueue as
         as a workaround due to a limitation in the way the rq library works:

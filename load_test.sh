@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Runs a load test where we run the service with increasing numbers of workers
-# and measuring the throughput as the number of functions passed to the service
+# and measure the throughput as the number of functions passed to the service
 # increases. Script creates a line chart showing the results.
 
 set -euo pipefail

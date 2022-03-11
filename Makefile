@@ -1,4 +1,4 @@
-.PHONY: service client dashboard test
+.PHONY: service service-down dashboard client load-test test
 
 
 service: workers?=1

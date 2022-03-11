@@ -33,8 +33,8 @@ def compute_this():
                 return func(*args, **kwargs)
             else:
                 # if __ready kwarg not set, we return an instance of
-                # DistributedFunctionService so that it can be queued later when
-                # run() is called
+                # DistributedFunctionService so that it can be queued later
+                # when run() is called
                 distributed = DistributedFunctionService(func, *args, **kwargs)
                 return distributed
 

@@ -47,7 +47,9 @@ def run_individual_test(num_functions: int):
 
     func_to_run = func(2)
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=num_functions) as executor:
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=num_functions,
+    ) as executor:
         futures = []
         for _ in range(num_functions):
             futures.append(executor.submit(func_to_run.run))
