@@ -14,6 +14,8 @@ Client code is inside `client`.
 
 An example of how the service is used is in `client/main.py`
 
+Load testing is done using a simple bash + Python script, with `pandas` + `plotly` for outputting the results.
+
 ## Usage
 
 ### `make load-test`
