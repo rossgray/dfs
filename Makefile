@@ -15,8 +15,7 @@ client:
 	docker compose run client
 
 load-test:
-load-test:
-	docker compose run client python -m client.load_test --csv_file results.csv --workers 5
+	bash load_test.sh
 
 test:
-	ENV=test python -m pytest tests
+	docker compose run test

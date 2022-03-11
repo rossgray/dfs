@@ -1,38 +1,49 @@
 import time
-import os
-from redis import Redis
-from rq import Queue
-import logging
 
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+from distribute_challenge.config import get_queue, get_redis_conn
 
-ENV = os.getenv("ENV")
-REDIS_HOST = os.getenv("REDIS_HOST")
+redis_conn = get_redis_conn()
+queue = get_queue(redis_conn)
 
-queue = None
-redis_conn = None
-if ENV == 'test':
-    from fakeredis import FakeStrictRedis
 
-    queue = Queue(is_async=False, connection=FakeStrictRedis())
-else:
-    redis_conn = Redis(host=REDIS_HOST)
-    queue = Queue(connection=redis_conn)
+class FunctionFailedError(Exception):
+    """Raised when a function fails during execution"""
 
 
 class DistributedFunctionService:
+    """A service for running functions using a distributed worker
+    architecture.
+    """
+
     def __init__(self, func, *args, **kwargs):
         self.func = func
         self.args = args
         self.kwargs = kwargs
 
     def run(self):
+        """Places the function in an rq queue where it will be consumed by one
+        of the workers. Since this function needs to return a result
+        synchronously to the client, we wait until the job has been executed and
+        then return the result.
+
+        We add a special '__ready' kwarg to the function to enqueue as
+        as a workaround due to a limitation in the way the rq library works:
+
+        The rq library queues functions based on their import path. This
+        does not play nicely with our decorated functions, since the function
+        being queued is not the inner function but our decorated function,
+        meaning we end up stuck in a loop.
+
+        When the worker comes to execute our function it sees this argument and
+        knows to execute the inner function directly rather than enqueuing it
+        again. (See compute_this decorator in decorators.py for reference)
+        """
         kwargs = self.kwargs
         kwargs['__ready'] = True
-        # logger.info('inside DistributedFunctionService.run')
         job = queue.enqueue(self.func, args=self.args, kwargs=kwargs)
-        # TODO - add error handling
         while job.result is None:
+            # if job failed, raise an exception
+            if job.is_failed is True:
+                raise FunctionFailedError
             time.sleep(0.1)
         return job.result
